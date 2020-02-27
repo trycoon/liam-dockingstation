@@ -1,0 +1,693 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic);
+
+
+/* UNIVERSAL */
+html, body {
+    height: 100%;
+    width: 100%;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+}
+
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    padding: 8px 0;
+    cursor: pointer;
+    background: transparent
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input {
+    font-size: 1em;
+    margin: 10px 0;
+    padding: 2px;
+}
+
+input:invalid {
+  border: 2px dashed red;
+}
+
+figure {
+  margin: 0;
+}
+
+ol, ul {
+    margin: 0;
+    padding: 0;
+}
+
+nav ul, nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+a {
+    color: #0066BBFF;
+    text-decoration: none;
+}
+
+label,select,textarea {
+    font-family : inherit;
+    font-size   : 100%;
+}
+
+select {
+    width: 100%;
+    max-width: 200px;
+    margin: 1vw 0;
+    border-radius: 4px;
+}
+
+@mixin no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+details, summary {  
+  border: none;  
+  outline: none;  
+} 
+
+/* ROOT FONT STYLES */
+* {
+  font-family: 'Lato', Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+/* TYPOGRAPHY */
+h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+h2 {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+h3 {
+    font-size: 1rem;
+    margin: 3vw auto 1vw auto;
+    text-align: center;
+}
+
+p {
+  font-size: 0.8rem;
+  font-weight: 200;
+  line-height: 1.8;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-regular {
+  font-weight: 400;
+}
+
+.font-heavy {
+  font-weight: 700;
+}
+
+/* POSITIONING */
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vertical-center {
+  position: relative;
+  top: 50%;
+  -webkit-transform: perspective(1px) translateY(-50%) translateZ(0);
+  -ms-transform: perspective(1px) translateY(-50%) translateZ(0);
+  transform: perspective(1px) translateY(-50%) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  /* TODO: fix blurry Chrome text when using "transform: translateY(-50%)" */
+}
+
+.justify {
+  text-align: justify;
+}
+
+.block {
+  display: block;
+}
+
+/* Themes */
+.theme-default {
+    background: #1a2126;
+    color: #fff;
+
+    .main-nav {
+        background: #101519;
+        border-right: 1px solid #1a2126;
+        box-shadow: none;
+    }
+}
+
+.theme-light {
+    background: #e3e3e3;
+    color: #111;
+
+    .main-nav {
+        background: #555555;
+        border-right: 1px solid #999;
+        box-shadow: none;
+    }
+}
+
+/* Wrapper (that wraps both navigation menu and main area)*/
+.all-wrapper {
+    height: 100%;
+    display: grid;
+
+    /* Navigation width in percent of viewport */
+    grid-template-columns: 15vw 100vw - 15vw;
+    @media (min-width: 1280px) {
+      grid-template-columns: 4vw 100vw - 4vw;
+    }
+
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+    -webkit-animation-fill-mode: forwards;
+    animation: fadein 2s;
+    animation-fill-mode: forwards;
+}
+
+/* Navigation menu */
+.main-nav {
+    text-align: center;
+    position: relative;
+    z-index: 30;
+    padding: 1rem 0 0 0;
+    display: block;
+
+    >ul {
+        >li {
+            position: relative;
+            cursor: pointer;
+            opacity: 0.5;
+
+            .fa-fw {
+                margin: 1rem auto 1rem auto;
+            }
+        }
+
+        .active {
+            opacity: 1;
+        }
+    }
+}
+
+/* Main area */
+.main {
+    margin: 0.5rem;
+    max-width: 1024px;
+}
+
+.section:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.button {
+  display: inline-block;
+  line-height: 32px;
+  padding: 0 10px;
+  font-size: 15px;
+  margin: 5px;
+  color: #bbb;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 0 2px rgba(black, .7);
+  background-color: #303030;
+  background-clip: padding-box;
+  border: 1px solid;
+  border-color: #202020 #1a1a1a #111;
+  border-radius: 10px;
+  background-image: linear-gradient(to bottom, #3d3d3d, #272727);
+  box-shadow: 0 1px rgba(255, 255, 255, 0.09), 0 1px 3px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 200px;
+  white-space: nowrap;
+  @include no-select;
+}
+
+.button-round-left {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 25%;
+}
+
+.button-round-right {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  width: 25%;
+}
+
+.button:hover {
+  background-color: #363636;
+  background-image: linear-gradient(top, #404040, #2a2a2a);
+}
+
+.button:disabled,
+.button[disabled] {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.button:active,
+.button.active {
+  line-height: 32px;
+  color: #ccc;
+  background-color: #33b42f;
+  border-color: #1c1c1c #202020 #222;
+  background-image: linear-gradient(to bottom, #3ea316, #4db633 60%, #5fbf47);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.09);
+}
+
+.button-group.round :first-child {
+  border-radius: 5000px 0 0 5000px;
+}
+
+.button-group.round :last-child {
+  border-radius: 0 5000px 5000px 0;
+}
+
+.heading {
+    font-size: 14px;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center
+}
+
+.pulsate {
+    -webkit-animation: pulsate 3s ease-out infinite;
+    animation: pulsate 3s ease-out infinite;
+    opacity: 0.5;
+}
+
+.shake {
+    -webkit-animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+#modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    overflow: auto;
+    background-color: rgb(0, 0, 0); /* fallback color */
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.loginbox {
+    width: 320px;
+    height: 420px;
+    background: #111;
+    color: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -210px; /* we could have used translate(-50%, -50%); but since we know the size this will do, and it will not interfere with the shake-animation. */
+    margin-left: -160px;
+    
+    padding: 40px 30px;
+    border-radius: 10px;
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    input {
+        width: 100%;
+        margin: 0 0 10px 0;
+        border: none;
+        outline: none;
+        color: #fff;
+    }
+
+    input[type="text"], input[type="password"] {
+        border-bottom: 1px solid #fff;
+        background: transparent;
+        height: 40px;
+        font-size: 1rem;
+        padding-left: 10px;
+    }
+
+    input[type="submit"] {
+        height: 40px;
+        margin: 20px 0 20px 0;
+        background: #256b25;
+        font-size: 1.2rem;
+        border-radius: 20px;
+    }
+
+    input[type="submit"]:hover {
+        cursor: pointer;
+        background: #25ab25;
+    }
+
+    .message {
+        height: 2rem;
+        color: #f00;
+    }
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  
+  to   { opacity: 1; }
+}
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+
+  to   { opacity: 1; }
+}
+@-webkit-keyframes pulsate {
+    0% {opacity: 0.5;}
+
+    50% { opacity: 1.0; }
+
+    100% { opacity: 0.5; }
+}
+@keyframes pulsate {
+    0% { opacity: 0.5; }
+    
+    50% { opacity: 1.0; }
+
+    100% { opacity: 0.5; }
+}
+@-webkit-keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+  
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+  
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.state-control {
+    .state {
+        color: red;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 3.0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        text-align: center;
+    }
+}
+
+/* Manual driving joystick */
+.joystick {
+    display: block;
+    max-width: 600px;
+    margin: auto;
+
+    .joyknob {
+        cursor: move;
+    }
+}
+
+/* Charts */
+.ct-chart {
+    position: relative;
+
+    .ct-label.ct-vertical,
+    .ct-label.ct-horizontal {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .ct-grid.ct-vertical,
+    .ct-grid.ct-horizontal {
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-dasharray: 2px;
+        shape-rendering: crispEdges;
+    }
+
+    .ct-series.ct-series-a .ct-line {
+        stroke: #008000;
+        stroke-width: 2px;
+        stroke-linecap: round;
+    }
+}
+
+/*
+.ct-legend {
+  position: relative;
+  z-index: 10;
+  list-style: none;
+  text-align: center;
+
+  li {
+      position: relative;
+      padding-left: 23px;
+      margin-right: 10px;
+      margin-bottom: 3px;
+      cursor: pointer;
+      display: inline-block;
+  }
+
+  li:before {
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      left: 0;
+      content: '';
+      border: 3px solid transparent;
+      border-radius: 2px;
+  }
+
+  li.inactive:before {
+      background: transparent;
+  }
+
+  &.ct-legend-inside {
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      li {
+        display: block;
+        margin: 0;
+      }
+  }
+}*/
+
+#battery-chart {
+    .ct-series.ct-series-b .ct-line {
+        stroke: #00A000;
+        stroke-width: 2px;
+        stroke-dasharray: 5px 3px;
+    }
+
+    .ct-series.ct-series-c .ct-line {
+        stroke: red;
+        stroke-width: 2px;
+        stroke-dasharray: 5px 3px;
+    }
+}
+
+#wifi-chart {
+  .ct-series.ct-series-b .ct-line {
+      stroke: red;
+      stroke-width: 2px;
+      stroke-dasharray: 5px 3px;
+  }
+}
+
+#memory-chart {
+  .ct-series.ct-series-b .ct-line {
+      stroke: #9da000;
+      stroke-width: 2px;
+  }
+}
+
+/* Battery indicator */
+.battery {
+  svg {
+    height: 15vw;
+  }
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex: 0 0 35%;
+  flex: 0 0 35%;
+
+  .battery-value {
+    float: right;
+    font-size: 5vw;
+    margin: 0 auto 0 3vw;
+    line-height: 15vw;
+    width: 2em;
+  }
+
+  .charging {
+    margin: 0 3vw 0 auto;
+  }
+}
+
+/* System messages log */
+#syslog {
+  width: 100%;
+  resize: none;
+  font-size: 0.8rem;
+  overflow-x: scroll;
+}
+
+/* Firmware update form */
+.firmwareUpdate {
+  width: 70vw;
+}
+
+/* 3D representation */
+.model3D_wrapper {
+  position: relative;
+  padding-bottom: 100%;
+
+  .model3D {
+    position: absolute;
+    display: block;
+    width: 100%;
+  }
+  
+  .model3D-loader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  
+    p {
+      font-size: 2em;
+    }
+  }
+}
+
+/* Mowing schedule */
+.mowerSchedule {
+  input[type=checkbox] {
+    display: none;
+    cursor: pointer;
+  }
+
+  input[type=checkbox]:checked + label {
+    background: #2AD705;
+    color: #ffffff;
+  }
+
+  .day {
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #333;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    width: 40px;
+  }
+
+  .button {
+    width: 20vw;
+  }
+
+  .clock {
+    width: 2em;
+  }
+
+  #scheduleList {
+    background-color: #080f14;
+    padding: 10px;
+
+    li {
+      list-style-type: none;
+      padding: 5px 0;
+      
+      .selected {
+        background: #2AD705;
+        color: #ffffff;
+      }
+
+      .removeSchedule {
+        display: inline-block;
+        padding: 5px 10px;
+        cursor: pointer;
+      }    
+    }
+
+    li:nth-child(even) {
+      background: #1c2328;
+    }
+
+    li:nth-child(odd) {
+      background: #3a4146;
+    }
+  }
+}
+
+/* Mower map */
+.map {
+  display: block;
+  border: solid 1px;
+  width: 100%;
+  height: auto;
+}

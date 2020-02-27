@@ -1,0 +1,1470 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "liam-esp",
+    "description": "REST-API for liam-esp mower"
+  },
+  "paths": {
+    "/v1/session": {
+      "post": {
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Login user and create session. An session cookie will be set that are expected to be used in future requests",
+        "operationId": "createSession",
+        "responses": {
+          "201": {
+            "description": "Successfully logged in user"
+          },
+          "400": {
+            "description": "If missing parameters or request is malformed"
+          },
+          "401": {
+            "description": "If login failed due to wrong credentials"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSession"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Get current session",
+        "operationId": "getSession",
+        "responses": {
+          "200": {
+            "description": "Active session available"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "description": "Logout session.",
+        "operationId": "deleteSession",
+        "responses": {
+          "200": {
+            "description": "Session removed"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/basic_auth": {
+      "get": {
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Sign on using HTTP Basic Authentication",
+        "operationId": "getBasicAuth",
+        "responses": {
+          "200": {
+            "description": "Authentication succeeded"
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
+    "/v1/apikey": {
+      "post": {
+        "security": [],
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Trigger the generation of a new API key to replace the old one for authentication",
+        "operationId": "generateApiKey",
+        "responses": {
+          "201": {
+            "description": "Successfully generated a new API key"
+          },
+          "401": {
+            "description": "If login failed due to wrong credentials"
+          }
+        }
+      }
+    },
+    "/v1/mowers": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "description": "Returns a list of all available mowers",
+        "operationId": "getMowers",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current available mowers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mowers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/status": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "description": "Returns current status of mower with the most useful information",
+        "operationId": "getStatus",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/system": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "description": "Returns current system information of mower",
+        "operationId": "getSystem",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current system information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/System"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/state": {
+      "put": {
+        "tags": [
+          "State"
+        ],
+        "description": "Set mowers current state, e.g. command it to start cutting, or go back to charge station.",
+        "operationId": "setState",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully changed to new state"
+          },
+          "400": {
+            "description": "Bad request (missformed JSON)"
+          },
+          "401": {
+            "description": "Not logged in"
+          },
+          "422": {
+            "description": "Unknown state requested"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetState"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/loglevel": {
+      "get": {
+        "tags": [
+          "Debugging"
+        ],
+        "description": "Get current loglevel for debugging and faultfinding",
+        "operationId": "getLoglevel",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns current loglevel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loglevel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Debugging"
+        ],
+        "description": "set loglevel for debugging and faultfinding. 0=none, 1=fatal, 2=error, 3=warning, 4=notice, 5=debug, 6=verbose",
+        "operationId": "setLoglevel",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully set loglevel"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Loglevel"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/logmessages": {
+      "get": {
+        "tags": [
+          "Debugging"
+        ],
+        "description": "Get log messages for mower.",
+        "operationId": "getLogmessages",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "query",
+            "name": "timeOffset",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "ISO-8601 timestamp of last message received, e.g. \"2020-02-25T23:31:00.889Z\", will fetch next <count> newer messages after that. Zero or no parameter will pick from the last messages received."
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer",
+              "format": "uint16",
+              "default": 50
+            },
+            "required": false,
+            "description": "Number of messages to receive"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns log messages within range of 'timeOffset' and 'count'.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Logmessages"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/factoryreset": {
+      "put": {
+        "tags": [
+          "System"
+        ],
+        "description": "Clear all settings and restart mower as brand new. (ALL SETTING WILL BE LOST!)",
+        "operationId": "factoryreset",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully factory reset mower"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/reboot": {
+      "put": {
+        "tags": [
+          "System"
+        ],
+        "description": "Reboot mower, application will restart but all settings will be left unaffected",
+        "operationId": "reboot",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully begun rebooting mower"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/manual/forward": {
+      "put": {
+        "tags": [
+          "Manual"
+        ],
+        "description": "Manually drive mower forward, set speed and turnrate",
+        "operationId": "manualForward",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully set mower to forward motion"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForwardBackwardMotion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/manual/backward": {
+      "put": {
+        "tags": [
+          "Manual"
+        ],
+        "description": "Manually drive mower backward, set speed and turnrate",
+        "operationId": "manualBackward",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully set mower to backward motion"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForwardBackwardMotion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/manual/stop": {
+      "put": {
+        "tags": [
+          "Manual"
+        ],
+        "description": "Stop mower when driving manually",
+        "operationId": "manualStop",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully stopped mower"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/manual/cutter_on": {
+      "put": {
+        "tags": [
+          "Manual"
+        ],
+        "description": "Start cutter on mower",
+        "operationId": "manualStartCutter",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully started cutter"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/manual/cutter_off": {
+      "put": {
+        "tags": [
+          "Manual"
+        ],
+        "description": "Stop cutter on mower",
+        "operationId": "manualStopCutter",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully stopped cutter"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/history/batteryVoltage": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "description": "Returns battery level over the past time.",
+        "operationId": "getBatteryHistory",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "query",
+            "name": "timeOffset",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The timestamp to receive entries after, e.g. \"2020-02-25T23:31:00.889Z\". If not specified then you get the last 30 minutes."
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The numbers of items to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Battery level history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatteryHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/history/chargeCurrent": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "description": "Returns charge current during docked state, over the past time.",
+        "operationId": "getChargeCurrent",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "query",
+            "name": "timeOffset",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The timestamp to receive entries after, e.g. \"2020-02-25T23:31:00.889Z\". If not specified then you get the last 30 minutes."
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The numbers of items to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Charge current history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChargeCurrentHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/history/cutterLoad": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "description": "Returns the load of the cutter motor, over the past time.",
+        "operationId": "getCutterLoad",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "query",
+            "name": "timeOffset",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The timestamp to receive entries after, e.g. \"2020-02-25T23:31:00.889Z\". If not specified then you get the last 30 minutes."
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The numbers of items to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cutter load history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CutterLoadHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/history/position": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "description": "Returns mower GNSS-position over the past time.",
+        "operationId": "getPositionHistory",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "query",
+            "name": "timeOffset",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The timestamp to receive entries after, e.g. \"2020-02-25T23:31:00.889Z\". If not specified then you get the last 30 minutes."
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The numbers of items to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GNSS-position history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/schedules": {
+      "post": {
+        "tags": [
+          "Scheduling"
+        ],
+        "description": "Add mowing schedule to list of schedules.",
+        "operationId": "createScheduleEntry",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully added schedule"
+          },
+          "400": {
+            "description": "If missing parameters or request is malformed"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleEntry"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Scheduling"
+        ],
+        "description": "Returns mower schedules.",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "operationId": "getSchedules",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of schedule entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleEntries"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/schedules/{position}": {
+      "delete": {
+        "tags": [
+          "Scheduling"
+        ],
+        "description": "Remove a schedule entry",
+        "operationId": "deleteScheduleEntry",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          },
+          {
+            "in": "path",
+            "name": "position",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Position in list (starting with 0)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule entry removed"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        }
+      }
+    },
+    "/v1/{mowerId}/perimeters": {
+      "post": {
+        "tags": [
+          "Perimeter"
+        ],
+        "description": "Add mowing perimeter/virtual wall.",
+        "operationId": "createPerimeter",
+        "security": [
+          {
+            "basicAuth": []
+          },
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/mowerId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully added perimeter"
+          },
+          "400": {
+            "description": "If missing parameters or request is malformed"
+          },
+          "401": {
+            "description": "Not logged in"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Perimeter"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "apikey"
+      }
+    },
+    "parameters": {
+      "mowerId": {
+        "in": "path",
+        "name": "mowerId",
+        "schema": {
+          "type": "string"
+        },
+        "required": true,
+        "description": "mower id"
+      }
+    },
+    "schemas": {
+      "Mowers": {
+        "properties": {
+          "mowers": {
+            "type": "array",
+            "description": "array of mower available",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "DOCKED",
+              "LAUNCHING",
+              "MOWING",
+              "DOCKING",
+              "CHARGING",
+              "STUCK",
+              "FLIPPED",
+              "MANUAL",
+              "STOP",
+              "TEST"
+            ]
+          },
+          "batteryVoltage": {
+            "type": "number",
+            "format": "float"
+          },
+          "batteryLevel": {
+            "type": "number",
+            "format": "float"
+          },
+          "batteryChargeCurrent": {
+            "type": "number",
+            "format": "float"
+          },
+          "isCharging": {
+            "type": "boolean"
+          },
+          "lastFullyChargeTime": {
+            "type": "integer",
+            "format": "unit32"
+          },
+          "lastChargeDuration": {
+            "type": "integer",
+            "format": "unit32"
+          },
+          "radioSignal": {
+            "type": "integer",
+            "format": "uint8"
+          },
+          "cutterLoad": {
+            "type": "integer",
+            "format": "uint8"
+          },
+          "cutterSpeed": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "uptime": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "leftWheelSpeed": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "rightWheelSpeed": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "pitch": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "roll": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "heading": {
+            "type": "integer",
+            "format": "uint16"
+          },
+          "obstacles": {
+            "type": "object",
+            "description": "distance (in centimeters) to possible obstacles, one reading per available sensor",
+            "properties": {
+              "left": {
+                "type": "integer",
+                "format": "uint16"
+              },
+              "front": {
+                "type": "integer",
+                "format": "uint16"
+              },
+              "right": {
+                "type": "integer",
+                "format": "uint16"
+              }
+            }
+          }
+        }
+      },
+      "System": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "mowerId": {
+            "type": "string"
+          },
+          "totalHeap": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "freeHeap": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "minFreeHeap": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "getMaxAllocHeap": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "localTime": {
+            "type": "string"
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "batteryFullVoltage": {
+                "type": "number",
+                "format": "float"
+              },
+              "batteryEmptyVoltage": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        }
+      },
+      "SetState": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "DOCKED",
+              "LAUNCHING",
+              "MOWING",
+              "DOCKING",
+              "CHARGING",
+              "STUCK",
+              "FLIPPED",
+              "MANUAL",
+              "STOP",
+              "TEST"
+            ]
+          }
+        }
+      },
+      "Loglevel": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "integer",
+            "format": "unit8",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          }
+        }
+      },
+      "Logmessages": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "log messages",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "time": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "uint16"
+          }
+        }
+      },
+      "ForwardBackwardMotion": {
+        "type": "object",
+        "properties": {
+          "speed": {
+            "type": "integer",
+            "format": "int8",
+            "description": "0-100%"
+          },
+          "turnrate": {
+            "type": "integer",
+            "format": "int8",
+            "description": "-1=>-100 left, 1=>100 right. 0 = don't turn."
+          },
+          "smooth": {
+            "type": "boolean",
+            "description": "smoothly take us to target speed"
+          }
+        }
+      },
+      "BatteryHistory": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string"
+            },
+            "voltage": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "ChargeCurrentHistory": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string"
+            },
+            "current": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "CutterLoadHistory": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string"
+            },
+            "load": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "PositionHistory": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "format": "double",
+              "description": "GNSS-latitude"
+            },
+            "lng": {
+              "type": "number",
+              "format": "double",
+              "description": "GNSS-longitude"
+            },
+            "pitch": {
+              "type": "integer",
+              "format": "int16"
+            },
+            "roll": {
+              "type": "integer",
+              "format": "int16"
+            },
+            "heading": {
+              "type": "integer",
+              "format": "uint16"
+            }
+          }
+        }
+      },
+      "CreateSession": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ScheduleEntry": {
+        "properties": {
+          "activeWeekdays": {
+            "type": "array",
+            "description": "Array of weekdays (starting with monday, tuesday...). True means mowing should be conducted this day of the week.",
+            "items": {
+              "type": "boolean"
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Time when mowing should begin. In the format \"HH:MM\", and we use a 24 hours notation."
+          },
+          "stopTime": {
+            "type": "string",
+            "description": "Time when mowing should end. In the format \"HH:MM\", and we use a 24 hours notation."
+          }
+        }
+      },
+      "ScheduleEntries": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "activeWeekdays": {
+              "type": "array",
+              "description": "Array of weekdays (starting with monday, tuesday...). True means mowing should be conducted this day of the week.",
+              "items": {
+                "type": "boolean"
+              },
+              "minItems": 7,
+              "maxItems": 7
+            },
+            "startTime": {
+              "type": "string",
+              "description": "Time when mowing should begin. In the format \"HH:MM\", and we use a 24 hours notation."
+            },
+            "stopTime": {
+              "type": "string",
+              "description": "Time when mowing should end. In the format \"HH:MM\", and we use a 24 hours notation."
+            }
+          }
+        }
+      },
+      "Perimeter": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "outerPerimeter": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "GNSS-latitude"
+                  }
+                },
+                "lng": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "GNSS-longitude"
+                  }
+                }
+              }
+            },
+            "perimeters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "lat": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "format": "double",
+                      "description": "GNSS-latitude"
+                    }
+                  },
+                  "lng": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "format": "double",
+                      "description": "GNSS-longitude"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    },
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "description": "Liam mower",
+      "url": "/api"
+    },
+    {
+      "description": "Running local mock",
+      "url": "http://localhost:3000/api"
+    }
+  ]
+}

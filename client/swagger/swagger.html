@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Liam-ESP API</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.22.2/swagger-ui.css"
+    />
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:200,300,400,700" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.22.2/swagger-ui-bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.22.2/swagger-ui-standalone-preset.js"></script>
+    <script>
+      function HideTopbarPlugin() {
+        // this plugin overrides the Topbar component to return nothing
+        return {
+          components: {
+            Topbar: function() {
+              return null;
+            },
+          },
+        };
+      }
+      window.ui = SwaggerUIBundle({
+        url: 'liam-openapi.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        displayRequestDuration: true,
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+        plugins: [SwaggerUIBundle.plugins.DownloadUrl, HideTopbarPlugin],
+        layout: 'StandaloneLayout',
+      });
+    </script>
+  </body>
+</html>

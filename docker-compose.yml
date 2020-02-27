@@ -1,0 +1,42 @@
+---
+version: '3.6'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
+    environment:
+      - discovery.type=single-node
+    container_name: elasticsearch
+    restart: unless-stopped
+    ports: ['9200:9200']
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '1'
+        max-size: 5m
+
+  influxdb:
+    image: influxdb:1.7-alpine
+    environment:
+      - INFLUXDB_DB=liam
+      - INFLUXDB_USER=influx_user
+      - INFLUXDB_USER_PASSWORD=influx_pwd
+    container_name: influxdb
+    restart: unless-stopped
+    ports: ['8086:8086']
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '1'
+        max-size: 5m
+
+  liam:
+    image: smarthomerocks/liam:latest
+    container_name: liam
+    ports: ['3000:3000']
+    depends_on: ['elasticsearch', 'influxdb']
+    restart: unless-stopped
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '1'
+        max-size: 5m
